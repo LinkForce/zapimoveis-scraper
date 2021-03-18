@@ -27,7 +27,7 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-from urllib.request import Request, urlopen
+from urllib.request import Request, urlopen, quote
 from bs4 import BeautifulSoup
 import json
 
@@ -42,7 +42,7 @@ __all__ = [
 
 
 # URL templates to make urls searches.
-url_home = "https://www.zapimoveis.com.br/%(acao)s/%(tipo)s/%(localization)s/?pagina=%(page)s"
+url_home = "https://www.zapimoveis.com.br/%(acao)s/%(tipo)s/%(localization)s/?pagina=%(page)s&onde=%(onde)s"
 
 # Default user agent, unless instructed by the user to change it.
 USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
@@ -109,10 +109,11 @@ def get_ZapItem(listing):
     return item
 
 
-def search(localization='go+goiania++setor-marista', num_pages=1, acao=ZapAcao.aluguel.value, tipo=ZapTipo.casas.value, dictionary_out = False):
+def search(localization='go+goiania++setor-marista', num_pages=1, acao=ZapAcao.aluguel.value, tipo=ZapTipo.casas.value, onde="", dictionary_out = False):
     page = 1
     items = []
-
+    onde = quote(onde)
+    
     while page <= num_pages:
         html = get_page(url_home % vars())
         soup = BeautifulSoup(html, 'html.parser')
